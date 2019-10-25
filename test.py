@@ -1,15 +1,16 @@
 """
     File name: test.py
     Author: Patrick Cummings
-    Date created: 10/13/2019
-    Date last modified: 10/18/2019
+    Date created: 10/24/2019
+    Date last modified: 10/24/2019
     Python Version: 3.7
 
-    Used to test instance of LinearModel() class.
+    Used to test instance of Perceptron class.
 """
 
-import inspect
+import json
 import pprint
+from pathlib import Path
 
 from models.perceptron import Perceptron
 
@@ -20,36 +21,21 @@ model = Perceptron(train='pa2_train_clean.csv',
                    test='pa2_test_no_label_clean.csv',
                    label='label')
 
-pp.pprint(inspect.getmembers(Perceptron, lambda x: not (inspect.isroutine(x))))
-pp.pprint(model.__dict__.keys())
-print(model.train_features)
-print(model.validation_features)
+learned_model = model.train_online_model(max_iter=15)
 
-# names = model.weight_labels
-# learned_model = model.train_model(50000)
-# val_predictions = model.predict_validation(learned_model['weights'])['predictions']
-# test_predictions = model.predict_test((learned_model['weights']))['predictions']
-#
-# prediction_output = pathlib.Path('model_output/predictions.pkl')
-# prediction_file = pathlib.Path('model_output/predictions.txt')
-#
-# pred_output_path = pathlib.Path(__file__).parent.resolve().joinpath(prediction_output)
-# pred_file_path = pathlib.Path(__file__).parent.resolve().joinpath(prediction_file)
-#
-# # Save predictions
-# with open(pred_output_path, 'wb') as fp:
-#     pickle.dump(test_predictions, fp, pickle.HIGHEST_PROTOCOL)
-#
-# # Output predictions to text file
-# with open(pred_file_path, 'w') as f:
-#     for prediction in test_predictions:
-#         f.write('%s\n' % prediction)
+# Save output for learned model to .json file.
+file_name = Path('model_output', 'online.json')
+file_path = Path(__file__).parent.resolve().joinpath(file_name)
+
+# Create output directory if doesn't exist.
+output_dir = file_path.parent.resolve()
+if not Path(output_dir).exists():
+    Path(output_dir).mkdir()
+with open(file_path, 'w') as f:
+    json.dump(learned_model, f, indent=4)
 
 # import inspect
-# pp.pprint(inspect.getmembers(LinearModel, lambda x:not(inspect.isroutine(x))))
+# pp.pprint(inspect.getmembers(Perceptron, lambda x: not (inspect.isroutine(x))))
 # pp.pprint(model.__dict__.keys())
-
-# print(learned_model)
-# print(dict(zip(names, learned_model['weights'])))
-# pp.pprint(val_predictions[:10])
-# pp.pprint(test_predictions[:10])
+# print(model.train_features)
+# print(model.validation_features)
