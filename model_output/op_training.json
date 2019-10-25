@@ -1,4 +1,5 @@
 {
+    "model": "online",
     "iterations": 15,
     "train_acc": [
         0.9474222585924713,

@@ -17,7 +17,7 @@ model = Perceptron(train='pa2_train_clean.csv',
                    test='pa2_test_no_label_clean.csv',
                    label='label')
 
-learned_model = model.train_online_model(max_iter=14)
+learned_model = model.train(max_iter=14)
 ```
 
 ## Data:

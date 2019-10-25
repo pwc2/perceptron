@@ -45,7 +45,7 @@ def calc_accuracy(predictions, labels):
     Returns:
         accuracy (float): Calculated accuracy.
     """
-    # Ensure lists are coerced to ndarrays of with dtype=int.
+    # Ensure lists are coerced to ndarrays of dtype=int.
     predictions = np.array(predictions, dtype=int)
     labels = np.array(labels, dtype=int)
     correct = (labels == predictions)

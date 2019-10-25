@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 
 from models.metrics import calc_predictions, calc_accuracy
+from models.algorithms import online_perceptron, average_perceptron
 
 
 class Perceptron:
@@ -19,7 +20,7 @@ class Perceptron:
     perceptron.
     """
 
-    def __init__(self, train, validation, test, label):
+    def __init__(self, train, validation, test, label, mod_type, max_iter):
         """Constructs a perceptron object...TODO
 
         Args:
@@ -27,6 +28,8 @@ class Perceptron:
             validation (str): Name of normalized csv file in /data folder with validation examples.
             test (str): Name of normalized csv file in /data folder with testing examples.
             label (str): Name of column with labels in train and validation sets.
+            mod_type (str): String specifying 'online', 'average', or 'kernel' for model to run.
+            max_iter (int): Maximum number of iterations for training.
         """
         # Get path to data folder to read in .csv files.
         data_path = Path(__file__).parent.resolve().joinpath(Path('..', 'data'))
@@ -47,6 +50,8 @@ class Perceptron:
 
         # Name of target column in DataFrames
         self.label = label
+        self.mod_type = mod_type
+        self.max_iter = max_iter
         # Labels to associate with weights, if needed
         self.weight_labels = self.train.columns.to_list()
         # Extract features and labels from train, validation, and test sets.
@@ -56,8 +61,9 @@ class Perceptron:
         self.validation_labels = self.validation[label]
         self.test_features = self.test
 
-    def train_online_model(self, max_iter):
+    def train_model(self):
         """Trains online perceptron, without random shuffling of training data.
+        Calls online_perceptron() from algorithms.py.
 
         Args:
             max_iter (int): Maximum number of iterations
@@ -72,42 +78,17 @@ class Perceptron:
         x_val = self.validation_features.to_numpy(dtype=np.float64)
         y_val = self.validation_labels.to_numpy(dtype=int)
 
-        # Number of features and number of samples.
-        samp_size = np.size(x_train, axis=0)
-        feature_size = np.size(x_train, axis=1)
+        if self.mod_type is 'online':
+            results = online_perceptron(x_train, y_train, x_val, y_val, self.max_iter)
+            return results
+        if self.mod_type is 'average':
+            results = average_perceptron(x_train, y_train, x_val, y_val, self.max_iter)
+            return results
+        if self.mod_type is 'kernel':
+            # TODO
+            return None
 
-        # Initialize all weights as zero, create list for training and validation accuracy for each iteration.
-        weights = np.zeros(feature_size, dtype=np.float64)
-        weights_list = []
-        train_acc_list = []
-        val_acc_list = []
-
-        for iteration in range(max_iter):
-            print('Current iteration: ' + str(iteration))
-            for sample in range(samp_size):
-                loss = y_train[sample] * (weights.T.dot(x_train[sample]))
-                if loss <= 0:
-                    weights += (y_train[sample] * x_train[sample])
-
-            # Calculate predictions and get accuracy for each iteration, append to lists.
-            train_pred = calc_predictions(x_train, weights)
-            val_pred = calc_predictions(x_val, weights)
-
-            train_acc = calc_accuracy(train_pred, y_train)
-            train_acc_list.append(train_acc)
-
-            val_acc = calc_accuracy(val_pred, y_val)
-            val_acc_list.append(val_acc)
-
-            weights_list.append(weights.tolist())
-
-        results = {'iterations': max_iter,
-                   'train_acc': train_acc_list,
-                   'val_acc': val_acc_list,
-                   'weights': weights_list}
-        return results
-
-    def online_test_predictions(self, weights):
+    def predict_test(self, weights):
         """Generate predictions for unlabeled test data.
 
         Args:
