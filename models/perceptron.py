@@ -64,7 +64,7 @@ class Perceptron:
 
         Returns:
             results (dict): Dictionary with number of iterations, list of training accuracies for each iteration,
-            list of validation accuracies for each iteration, and weights from last iteration.
+            list of validation accuracies for each iteration, and a list of weights from each iteration.
         """
         # Training and validation sets and labels.
         x_train = self.train_features.to_numpy(dtype=np.float64)
@@ -78,6 +78,7 @@ class Perceptron:
 
         # Initialize all weights as zero, create list for training and validation accuracy for each iteration.
         weights = np.zeros(feature_size, dtype=np.float64)
+        weights_list = []
         train_acc_list = []
         val_acc_list = []
 
@@ -98,10 +99,12 @@ class Perceptron:
             val_acc = calc_accuracy(val_pred, y_val)
             val_acc_list.append(val_acc)
 
+            weights_list.append(weights.tolist())
+
         results = {'iterations': max_iter,
                    'train_acc': train_acc_list,
                    'val_acc': val_acc_list,
-                   'weights': weights.tolist()}
+                   'weights': weights_list}
         return results
 
     def online_test_predictions(self, weights):

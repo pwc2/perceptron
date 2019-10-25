@@ -19,7 +19,7 @@ model = Perceptron(train='pa2_train_clean.csv',
                    test='pa2_test_no_label_clean.csv',
                    label='label')
 
-learned_model = model.train_online_model(max_iter=14)
+learned_model = model.train_online_model(max_iter=15)
 
 # Save output for learned model to .json file.
 output_folder = Path('model_output')
@@ -33,7 +33,7 @@ with open(training_file, 'w') as f:
     json.dump(learned_model, f, indent=4)
 
 # Best validation accuracy with 14 iterations, calculate and save predictions.
-test_predictions = model.online_test_predictions(learned_model['weights'])
+test_predictions = model.online_test_predictions(learned_model['weights'][13])
 prediction_file = output_path.joinpath(Path('oplabel.json'))
 with open(prediction_file, 'w') as f:
     json.dump(test_predictions, f, indent=4)
