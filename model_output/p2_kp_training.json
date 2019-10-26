@@ -1,5 +1,6 @@
 {
   "model": "kernel",
+  "p": 2,
   "iterations": 15,
   "train_acc": [
     0.9644026186579379,

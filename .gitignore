@@ -1,3 +1,6 @@
 /data/
 .idea
 /model_output/test.json
+.Rproj.user
+/perceptron.Rproj
+/Plots.Rmd

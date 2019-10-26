@@ -252,6 +252,7 @@ def kernel_perceptron(X_train, y_train, X_val, y_val, p, max_iter):
         alphas_list.append(alphas.tolist())
 
     results = {'model': 'kernel',
+               'p': p,
                'iterations': max_iter,
                'train_acc': train_acc_list,
                'val_acc': val_acc_list,
