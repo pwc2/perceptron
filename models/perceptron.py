@@ -73,19 +73,19 @@ class Perceptron:
             results (dict): dictionary with results from training, depends on model type.
         """
         # Training and validation sets and labels.
-        x_train = self.train_features.to_numpy(dtype=np.float64)
+        X_train = self.train_features.to_numpy(dtype=np.float64)
         y_train = self.train_labels.to_numpy(dtype=int)
-        x_val = self.validation_features.to_numpy(dtype=np.float64)
+        X_val = self.validation_features.to_numpy(dtype=np.float64)
         y_val = self.validation_labels.to_numpy(dtype=int)
 
         if self.mod_type is 'online':
-            results = online_perceptron(x_train, y_train, x_val, y_val, self.max_iter)
+            results = online_perceptron(X_train, y_train, X_val, y_val, self.max_iter)
             return results
         if self.mod_type is 'average':
-            results = average_perceptron(x_train, y_train, x_val, y_val, self.max_iter)
+            results = average_perceptron(X_train, y_train, X_val, y_val, self.max_iter)
             return results
         if self.mod_type is 'kernel':
-            results = kernel_perceptron(x_train, y_train, x_val, y_val, self.p, self.max_iter)
+            results = kernel_perceptron(X_train, y_train, X_val, y_val, self.p, self.max_iter)
             return results
 
     def predict_test(self, weights):

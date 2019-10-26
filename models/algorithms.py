@@ -18,53 +18,34 @@
 import numpy as np
 
 
-def calc_predictions(x, weights):
+def calc_predictions(X, weights):
     """Calculates predicted values for perceptron classifier using given weights.
 
     Args:
-        x (ndarray): (n x m) ndarray of n observations on m features.
+        X (ndarray): (n x m) ndarray of n observations on m features.
         weights (ndarray): (1 x m) ndarray of m weights from learned model.
 
     Returns:
         predictions (list of float): list of predicted values in {-1, 1}.
     """
-    weights = np.array(weights, dtype=np.float64)
-    predictions = []
-    for i in range(np.size(x, axis=0)):
-        wtx = weights.T.dot(x[i])
-        if wtx >= 0:
-            pred = 1
-        else:
-            pred = -1
-        predictions.append(pred)
+    wtx = X.dot(weights)
+    predictions = [1 if x >= 0 else -1 for x in wtx]
     return predictions
 
 
-def calc_predictions_kernel(x_train, y_train, x_val, alphas, p):
-    """Calculates predicted values for perceptron classifier using given weights.
+def calc_predictions_kernel(alphas, y_train, K):
+    """Calculates predicted values for polynomial kernel perceptron classifier using given alphas.
 
     Args:
-        x_train (ndarray): (n x m) ndarray of n observations on m features from training set.
-        y_train (ndarray): (n x 1) ndarray of labels from training set.
-        x_val (ndarray): (k x m) ndarray of features from validation set.
         alphas (ndarray): (1 x n) ndarray of n alphas from learned model.
-        p (int): degree of polynomial kernel.
+        y_train (ndarray): (n x 1) ndarray of labels from training set.
+        K (ndarray): (k x m) ndarray of gram matrix, or similarity matrix.
 
     Returns:
         predictions (list of float): list of predicted values in {-1, 1}.
     """
-    alphas = np.array(alphas, dtype=np.float64)
-    predictions = []
-    for i in range(np.size(x_val, axis=0)):
-        # u = 0
-        # for j in range(np.size(x_train, axis=0)):
-        #     u += alphas[j] * y_train[j] * poly_kernel(x_train[j], x_val[i], p)
-        u = np.dot(alphas.dot(poly_kernel(x_train.T, x_val[i], p)), y_train).sum()
-        if u >= 0:
-            pred = 1
-        else:
-            pred = -1
-        predictions.append(pred)
+    u = (alphas * y_train).dot(K)
+    predictions = [1 if x >= 0 else -1 for x in u]
     return predictions
 
 
@@ -78,7 +59,7 @@ def calc_accuracy(predictions, labels):
     Returns:
         accuracy (float): calculated accuracy.
     """
-    # Ensure lists are coerced to ndarrays of dtype=int.
+    # Ensure lists are coerced to ndarrays of integers.
     predictions = np.array(predictions, dtype=int)
     labels = np.array(labels, dtype=int)
     correct = (labels == predictions)
@@ -86,14 +67,14 @@ def calc_accuracy(predictions, labels):
     return accuracy
 
 
-def online_perceptron(x_train, y_train, x_val, y_val, max_iter):
+def online_perceptron(X_train, y_train, X_val, y_val, max_iter):
     """Trains online perceptron, without random shuffling of training data.
         Calls calc_predictions() and calc_accuracy() from metrics.py.
 
     Args:
-        x_train (ndarray): ndarray of training features.
+        X_train (ndarray): ndarray of training features.
         y_train (ndarray): ndarray of training labels.
-        x_val (ndarray): ndarray of validation features.
+        X_val (ndarray): ndarray of validation features.
         y_val (ndarray): ndarray of validation labels.
         max_iter (int): maximum number of iterations for training.
 
@@ -103,11 +84,11 @@ def online_perceptron(x_train, y_train, x_val, y_val, max_iter):
     """
 
     # Number of features and number of samples.
-    samp_size = np.size(x_train, axis=0)
-    feature_size = np.size(x_train, axis=1)
+    n_train = np.size(X_train, axis=0)
+    n_features = np.size(X_train, axis=1)
 
     # Initialize all weights as zero, create list for training and validation accuracy for each iteration.
-    weights = np.zeros(feature_size, dtype=np.float64)
+    weights = np.zeros(n_features, dtype=np.float64)
     weights_list = []
     train_acc_list = []
     val_acc_list = []
@@ -115,14 +96,14 @@ def online_perceptron(x_train, y_train, x_val, y_val, max_iter):
     # Run training algorithm.
     for iteration in range(max_iter):
         print('Current iteration: ' + str(iteration + 1))
-        for sample in range(samp_size):
-            loss = y_train[sample] * (weights.T.dot(x_train[sample]))
+        for sample in range(n_train):
+            loss = y_train[sample] * (weights.T.dot(X_train[sample]))
             if loss <= 0:
-                weights += (y_train[sample] * x_train[sample])
+                weights += (y_train[sample] * X_train[sample])
 
         # Calculate predictions and get accuracy for each iteration, append to lists.
-        train_pred = calc_predictions(x_train, weights)
-        val_pred = calc_predictions(x_val, weights)
+        train_pred = calc_predictions(X_train, weights)
+        val_pred = calc_predictions(X_val, weights)
 
         train_acc = calc_accuracy(train_pred, y_train)
         train_acc_list.append(train_acc)
@@ -140,14 +121,14 @@ def online_perceptron(x_train, y_train, x_val, y_val, max_iter):
     return results
 
 
-def average_perceptron(x_train, y_train, x_val, y_val, max_iter):
+def average_perceptron(X_train, y_train, X_val, y_val, max_iter):
     """Trains average perceptron, without random shuffling of training data.
         Calls calc_predictions() and calc_accuracy() from metrics.py.
 
     Args:
-        x_train (ndarray): ndarray of training features.
+        X_train (ndarray): ndarray of training features.
         y_train (ndarray): ndarray of training labels.
-        x_val (ndarray): ndarray of validation features.
+        X_val (ndarray): ndarray of validation features.
         y_val (ndarray): ndarray of validation labels.
         max_iter (int): maximum number of iterations for training.
 
@@ -157,12 +138,12 @@ def average_perceptron(x_train, y_train, x_val, y_val, max_iter):
     """
 
     # Number of features and number of samples.
-    samp_size = np.size(x_train, axis=0)
-    feature_size = np.size(x_train, axis=1)
+    n_train = np.size(X_train, axis=0)
+    n_features = np.size(X_train, axis=1)
 
     # Initialize all weights as zero, count to 1, create list for training and validation accuracy for each iteration.
-    weights = np.zeros(feature_size, dtype=np.float64)
-    avg_weights = np.zeros(feature_size, dtype=np.float64)
+    weights = np.zeros(n_features, dtype=np.float64)
+    avg_weights = np.zeros(n_features, dtype=np.float64)
     count = 1
     avg_weights_list = []
     train_acc_list = []
@@ -171,16 +152,16 @@ def average_perceptron(x_train, y_train, x_val, y_val, max_iter):
     # Run training algorithm.
     for iteration in range(max_iter):
         print('Current iteration: ' + str(iteration + 1))
-        for sample in range(samp_size):
-            loss = y_train[sample] * (weights.T.dot(x_train[sample]))
+        for sample in range(n_train):
+            loss = y_train[sample] * (weights.T.dot(X_train[sample]))
             if loss <= 0:
-                weights += (y_train[sample] * x_train[sample])
+                weights += (y_train[sample] * X_train[sample])
             avg_weights = (count * avg_weights + weights) / (count + 1)
             count += 1
 
         # Calculate predictions and get accuracy for each iteration, append to lists.
-        train_pred = calc_predictions(x_train, avg_weights)
-        val_pred = calc_predictions(x_val, avg_weights)
+        train_pred = calc_predictions(X_train, avg_weights)
+        val_pred = calc_predictions(X_val, avg_weights)
 
         train_acc = calc_accuracy(train_pred, y_train)
         train_acc_list.append(train_acc)
@@ -198,14 +179,14 @@ def average_perceptron(x_train, y_train, x_val, y_val, max_iter):
     return results
 
 
-def kernel_perceptron(x_train, y_train, x_val, y_val, p, max_iter):
+def kernel_perceptron(X_train, y_train, X_val, y_val, p, max_iter):
     """Trains a polynomial kernelized perceptron, without random shuffling of training data.
         Calls calc_predictions() and calc_accuracy() from metrics.py.
 
     Args:
-        x_train (ndarray): ndarray of training features.
+        X_train (ndarray): ndarray of training features.
         y_train (ndarray): ndarray of training labels.
-        x_val (ndarray): ndarray of validation features.
+        X_val (ndarray): ndarray of validation features.
         y_val (ndarray): ndarray of validation labels.
         p (int): degree of polynomial kernel.
         max_iter (int): maximum number of iterations for training.
@@ -215,37 +196,33 @@ def kernel_perceptron(x_train, y_train, x_val, y_val, p, max_iter):
         list of validation accuracies for each iteration, and a list of weights from each iteration.
     """
 
-    # Number of features and number of samples.
-    samp_size = np.size(x_train, axis=0)
-    feature_size = np.size(x_train, axis=1)
+    # Number of samples.
+    n_train = np.size(X_train, axis=0)
 
     # Initialize all alphas as zero, create list for training and validation accuracy for each iteration.
-    alphas = np.zeros(samp_size, dtype=np.float64)
+    alphas = np.zeros(n_train, dtype=int)
     alphas_list = []
     train_acc_list = []
     val_acc_list = []
 
-    # Compute gram matrices.
-    print('Computing gram matrix on training set.')
-    gram = compute_gram(x_train, p)
-    print('Gram matrix computed.')
+    # Compute gram (K) matrix.
+    print('Computing Gram matrix on training set for p = ' + str(p) + '.')
+    K = poly_kernel(X_train, X_train, p)
 
     # Run training algorithm.
     for iteration in range(max_iter):
         print('Current iteration: ' + str(iteration + 1))
-        for sample in range(samp_size):
-            # u = 0
-            # for i in range(samp_size):
-            #     u += alphas[i] * y_train[i] * gram[i, sample]
-            # u = (alphas.dot(y_train)).dot(gram[:, sample]) (alphas.dot(gram[:, sample])).dot(y_train)
-            u = np.dot(alphas.dot(gram[:, sample]), y_train).sum()
+        for sample in range(n_train):
+            u = np.dot(alphas * y_train, K[:, sample])
             if y_train[sample] * u <= 0:
                 alphas[sample] += 1
 
+        # Calculate similarity matrix for train and validation sets.
+        K_val = poly_kernel(X_train, X_val, p)
+
         # Calculate predictions and get accuracy for each iteration, append to lists.
-        train_pred = calc_predictions_kernel(x_train, y_train, x_train, alphas, p)
-        # train_pred = (alphas.dot(gram)).dot(y_train)
-        val_pred = calc_predictions_kernel(x_train, y_train, x_val, alphas, p)
+        train_pred = calc_predictions_kernel(alphas, y_train, K)
+        val_pred = calc_predictions_kernel(alphas, y_train, K_val)
 
         train_acc = calc_accuracy(train_pred, y_train)
         train_acc_list.append(train_acc)
@@ -263,40 +240,16 @@ def kernel_perceptron(x_train, y_train, x_val, y_val, p, max_iter):
     return results
 
 
-def poly_kernel(x_1, x_2, p):
+def poly_kernel(X, Y, p):
     """Calculate polynomial kernel of degree p as (1 + x1.T.dot(x2)) ** p.
 
     Args:
-        x_1 (ndarray): first vector of training data.
-        x_2 (ndarray): second vector of training data.
+        X (ndarray): first vector or matrix.
+        Y (ndarray): second vector or matrix.
         p (int): degree of polynomial kernel.
 
     Returns:
-        kernel (float): calculated polynomial kernel.
+        K (float): calculated polynomial kernel.
     """
-    kernel = (1 + x_1.T.dot(x_2)) ** p
-    return kernel
-
-
-def compute_gram(x_train, p):
-    """Compute gram matrix from features from training set using polynomial kernel.
-        Calls poly_kernel().
-    Args:
-        x_train (ndarray): (n x m) ndarray of features from training set.
-        p (int): degree of polynomial kernel to compute.
-
-    Returns:
-        gram (ndarray): (n x n) gram matrix.
-    """
-    # Ensure training features are in ndarray
-    x = np.array(x_train, dtype=np.float64)
-    samp_size = np.size(x, axis=0)
-    gram = np.zeros((samp_size, samp_size), dtype=np.float64)
-    # Compute gram matrix
-    for i in range(samp_size):
-        for j in range(i):
-            gram[i, j] = poly_kernel(x[i, :], x[j, :], p)
-            gram[j, i] = gram[i, j]
-    # Since symmetric, add back transpose to fill rest of matrix
-    gram = gram + gram.T
-    return gram
+    K = (1 + X.dot(Y.T)) ** p
+    return K
