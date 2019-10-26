@@ -2,7 +2,7 @@
     File name: run_part3.py
     Author: Patrick Cummings
     Date created: 10/24/2019
-    Date last modified: 10/24/2019
+    Date last modified: 10/26/2019
     Python Version: 3.7
 
     To run polynomial kernel perceptron.
@@ -28,7 +28,7 @@ for value in p:
     # Save output for learned model to .json file.
     output_folder = Path('model_output')
     output_path = Path(__file__).parent.resolve().joinpath(output_folder)
-    training_file = output_path.joinpath(Path(str(value) + '_kp_training.json'))
+    training_file = output_path.joinpath(Path('p' + str(value) + '_kp_training.json'))
 
     # Create output directory if doesn't exist.
     if not Path(output_path).exists():

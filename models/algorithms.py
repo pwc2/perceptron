@@ -2,7 +2,7 @@
     File name: algorithms.py
     Author: Patrick Cummings
     Date created: 10/25/2019
-    Date last modified: 10/25/2019
+    Date last modified: 10/26/2019
     Python Version: 3.7
 
     Contains functions for training and evaluating perceptron model.
@@ -18,7 +18,7 @@
 import numpy as np
 
 
-def calc_predictions(X, weights):
+def predict(X, weights):
     """Calculates predicted values for perceptron classifier using given weights.
 
     Args:
@@ -33,7 +33,7 @@ def calc_predictions(X, weights):
     return predictions
 
 
-def calc_predictions_kernel(alphas, y_train, K):
+def predict_kernel(alphas, y_train, K):
     """Calculates predicted values for polynomial kernel perceptron classifier using given alphas.
 
     Args:
@@ -49,7 +49,7 @@ def calc_predictions_kernel(alphas, y_train, K):
     return predictions
 
 
-def calc_accuracy(predictions, labels):
+def accuracy(predictions, labels):
     """Calculate accuracy of perceptron classifier.
 
     Args:
@@ -65,6 +65,22 @@ def calc_accuracy(predictions, labels):
     correct = (labels == predictions)
     accuracy = correct.sum() / np.size(correct)
     return accuracy
+
+
+def poly_kernel(X, Y, p):
+    """Calculate polynomial kernel of degree p as (1 + X.dot(Y.T)) ** p.
+    Use to create Gram or similarity matrices.
+
+    Args:
+        X (ndarray): first vector or matrix.
+        Y (ndarray): second vector or matrix.
+        p (int): degree of polynomial kernel.
+
+    Returns:
+        K (float): calculated polynomial kernel.
+    """
+    K = (1 + X.dot(Y.T)) ** p
+    return K
 
 
 def online_perceptron(X_train, y_train, X_val, y_val, max_iter):
@@ -94,6 +110,7 @@ def online_perceptron(X_train, y_train, X_val, y_val, max_iter):
     val_acc_list = []
 
     # Run training algorithm.
+    print('\nRunning online perceptron...')
     for iteration in range(max_iter):
         print('Current iteration: ' + str(iteration + 1))
         for sample in range(n_train):
@@ -102,13 +119,13 @@ def online_perceptron(X_train, y_train, X_val, y_val, max_iter):
                 weights += (y_train[sample] * X_train[sample])
 
         # Calculate predictions and get accuracy for each iteration, append to lists.
-        train_pred = calc_predictions(X_train, weights)
-        val_pred = calc_predictions(X_val, weights)
+        train_pred = predict(X_train, weights)
+        val_pred = predict(X_val, weights)
 
-        train_acc = calc_accuracy(train_pred, y_train)
+        train_acc = accuracy(train_pred, y_train)
         train_acc_list.append(train_acc)
 
-        val_acc = calc_accuracy(val_pred, y_val)
+        val_acc = accuracy(val_pred, y_val)
         val_acc_list.append(val_acc)
 
         weights_list.append(weights.tolist())
@@ -150,6 +167,7 @@ def average_perceptron(X_train, y_train, X_val, y_val, max_iter):
     val_acc_list = []
 
     # Run training algorithm.
+    print('\nRunning average perceptron...')
     for iteration in range(max_iter):
         print('Current iteration: ' + str(iteration + 1))
         for sample in range(n_train):
@@ -160,13 +178,13 @@ def average_perceptron(X_train, y_train, X_val, y_val, max_iter):
             count += 1
 
         # Calculate predictions and get accuracy for each iteration, append to lists.
-        train_pred = calc_predictions(X_train, avg_weights)
-        val_pred = calc_predictions(X_val, avg_weights)
+        train_pred = predict(X_train, avg_weights)
+        val_pred = predict(X_val, avg_weights)
 
-        train_acc = calc_accuracy(train_pred, y_train)
+        train_acc = accuracy(train_pred, y_train)
         train_acc_list.append(train_acc)
 
-        val_acc = calc_accuracy(val_pred, y_val)
+        val_acc = accuracy(val_pred, y_val)
         val_acc_list.append(val_acc)
 
         avg_weights_list.append(avg_weights.tolist())
@@ -206,10 +224,11 @@ def kernel_perceptron(X_train, y_train, X_val, y_val, p, max_iter):
     val_acc_list = []
 
     # Compute gram (K) matrix.
-    print('Computing Gram matrix on training set for p = ' + str(p) + '.')
+    print('\nComputing Gram matrix on training set for p = ' + str(p) + '.')
     K = poly_kernel(X_train, X_train, p)
 
     # Run training algorithm.
+    print('Running polynomial kernel perceptron...')
     for iteration in range(max_iter):
         print('Current iteration: ' + str(iteration + 1))
         for sample in range(n_train):
@@ -221,13 +240,13 @@ def kernel_perceptron(X_train, y_train, X_val, y_val, p, max_iter):
         K_val = poly_kernel(X_train, X_val, p)
 
         # Calculate predictions and get accuracy for each iteration, append to lists.
-        train_pred = calc_predictions_kernel(alphas, y_train, K)
-        val_pred = calc_predictions_kernel(alphas, y_train, K_val)
+        train_pred = predict_kernel(alphas, y_train, K)
+        val_pred = predict_kernel(alphas, y_train, K_val)
 
-        train_acc = calc_accuracy(train_pred, y_train)
+        train_acc = accuracy(train_pred, y_train)
         train_acc_list.append(train_acc)
 
-        val_acc = calc_accuracy(val_pred, y_val)
+        val_acc = accuracy(val_pred, y_val)
         val_acc_list.append(val_acc)
 
         alphas_list.append(alphas.tolist())
@@ -238,18 +257,3 @@ def kernel_perceptron(X_train, y_train, X_val, y_val, p, max_iter):
                'val_acc': val_acc_list,
                'alphas': alphas_list}
     return results
-
-
-def poly_kernel(X, Y, p):
-    """Calculate polynomial kernel of degree p as (1 + x1.T.dot(x2)) ** p.
-
-    Args:
-        X (ndarray): first vector or matrix.
-        Y (ndarray): second vector or matrix.
-        p (int): degree of polynomial kernel.
-
-    Returns:
-        K (float): calculated polynomial kernel.
-    """
-    K = (1 + X.dot(Y.T)) ** p
-    return K

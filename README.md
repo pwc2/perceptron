@@ -15,7 +15,10 @@ from models.perceptron import Perceptron
 model = Perceptron(train='pa2_train_clean.csv',
                    validation='pa2_valid_clean.csv',
                    test='pa2_test_no_label_clean.csv',
-                   label='label')
+                   label='label', # Specify target name
+                   mod_type='online', # Choose model type
+                   max_iter=15, # Set maximum iterations for training
+                   p=None) # If using polynomial kernel, set degree
 
 learned_model = model.train(max_iter=14)
 ```
@@ -28,4 +31,3 @@ In `data/` folder:
 
 In `run` module:
 
-Use `python main.py` to run parts 0 through 3.

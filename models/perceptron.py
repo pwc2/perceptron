@@ -2,7 +2,7 @@
     File name: perceptron.py
     Author: Patrick Cummings
     Date created: 10/24/2019
-    Date last modified: 10/24/2019
+    Date last modified: 10/26/2019
     Python Version: 3.7
 """
 
@@ -11,7 +11,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from models.algorithms import calc_predictions, online_perceptron, average_perceptron, kernel_perceptron, poly_kernel
+from models.algorithms import predict, online_perceptron, average_perceptron, kernel_perceptron
 
 
 class Perceptron:
@@ -20,7 +20,7 @@ class Perceptron:
     """
 
     def __init__(self, train, validation, test, label, mod_type, max_iter, p=None):
-        """Constructs a perceptron object...TODO
+        """Constructs a perceptron object.
 
         Args:
             train (str): name of normalized csv file in /data folder with training examples.
@@ -53,8 +53,10 @@ class Perceptron:
         self.mod_type = mod_type
         self.max_iter = max_iter
         self.p = p
+
         # Labels to associate with weights, if needed.
         self.weight_labels = self.train.columns.to_list()
+
         # Extract features and labels from train, validation, and test sets.
         self.train_features = self.train.drop(label, axis=1)
         self.train_labels = self.train[label]
@@ -72,7 +74,6 @@ class Perceptron:
         Returns:
             results (dict): dictionary with results from training, depends on model type.
         """
-        # Training and validation sets and labels.
         X_train = self.train_features.to_numpy(dtype=np.float64)
         y_train = self.train_labels.to_numpy(dtype=int)
         X_val = self.validation_features.to_numpy(dtype=np.float64)
@@ -98,5 +99,5 @@ class Perceptron:
             predictions (list of int): list of predicted labels.
         """
         x_test = self.test_features.to_numpy(dtype=np.float64)
-        predictions = calc_predictions(x_test, weights)
+        predictions = predict(x_test, weights)
         return predictions

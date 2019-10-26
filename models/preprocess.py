@@ -2,7 +2,7 @@
     File name: preprocess.py
     Author: Patrick Cummings
     Date created: 10/24/2019
-    Date last modified: 10/24/2019
+    Date last modified: 10/26/2019
     Python Version: 3.7
 
     preprocess() converts labels to {-1, 1} as required, and adds a bias feature set to 1.
@@ -55,47 +55,46 @@ def preprocess(csv_file, name):
     with open(data_path.joinpath(Path(file_name)), 'wb') as fpkl:
         pickle.dump(df, fpkl, pickle.HIGHEST_PROTOCOL)
 
-
-def normalize_features(train_pkl, other_pkl, name):
-    """Normalize features to (0, 1) range with respect to training set.
-
-    Args:
-        train_pkl (str): Name of .pkl file in /data with DataFrame of preprocessed training data.
-        other_pkl (str): Name of .pkl file in /data with DataFrame of preprocessed data to normalize.
-        name (str): String specifying if other DataFrame is 'train', 'validation', or 'test' set.
-
-    Returns:
-        None
-    """
-    # Get path to data folder and .csv files.
-    data_path = Path(__file__).parent.resolve().joinpath(Path('..', 'data'))
-    train_path = data_path.joinpath(Path(train_pkl))
-    other_path = data_path.joinpath(Path(other_pkl))
-
-    # Load cleaned DataFrames.
-    with open(train_path, 'rb') as fpkl1:
-        train_df = pickle.load(fpkl1)
-    with open(other_path, 'rb') as fpkl2:
-        other_df = pickle.load(fpkl2)
-
-    # Extract the features to be normalized, and overall max and min gray-scale values from training set
-    # Since I'm assuming all pixel features are already on the same scale
-    other_features = pd.DataFrame(other_df.loc[:, other_df.columns != 'label'])
-    train_max = train_df.values.max()
-    train_min = train_df.values.min()
-
-    # Normalize all features wrt to training set.
-    norm_df = (other_features - train_min) / (train_max - train_min)
-
-    # Fill NaN's created during normalization when max == min.
-    norm_df = norm_df.fillna(0)
-
-    # Reset bias feature to 1 and make sure it's first column in DataFrame.
-    norm_df = norm_df.assign(bias=1).set_index('bias').reset_index()
-
-    # Replace non-normalized columns with normalized columns before saving to .csv.
-    other_df.update(norm_df)
-
-    # Grab original filename to save normalized data.
-    file_name = str(other_path.stem) + '_norm.csv'
-    other_df.to_csv(data_path.joinpath(Path(file_name)), index=False)
+# def normalize_features(train_pkl, other_pkl, name):
+#     """Normalize features to (0, 1) range with respect to training set.
+#
+#     Args:
+#         train_pkl (str): Name of .pkl file in /data with DataFrame of preprocessed training data.
+#         other_pkl (str): Name of .pkl file in /data with DataFrame of preprocessed data to normalize.
+#         name (str): String specifying if other DataFrame is 'train', 'validation', or 'test' set.
+#
+#     Returns:
+#         None
+#     """
+#     # Get path to data folder and .csv files.
+#     data_path = Path(__file__).parent.resolve().joinpath(Path('..', 'data'))
+#     train_path = data_path.joinpath(Path(train_pkl))
+#     other_path = data_path.joinpath(Path(other_pkl))
+#
+#     # Load cleaned DataFrames.
+#     with open(train_path, 'rb') as fpkl1:
+#         train_df = pickle.load(fpkl1)
+#     with open(other_path, 'rb') as fpkl2:
+#         other_df = pickle.load(fpkl2)
+#
+#     # Extract the features to be normalized, and overall max and min gray-scale values from training set
+#     # Since I'm assuming all pixel features are already on the same scale
+#     other_features = pd.DataFrame(other_df.loc[:, other_df.columns != 'label'])
+#     train_max = train_df.values.max()
+#     train_min = train_df.values.min()
+#
+#     # Normalize all features wrt to training set.
+#     norm_df = (other_features - train_min) / (train_max - train_min)
+#
+#     # Fill NaN's created during normalization when max == min.
+#     norm_df = norm_df.fillna(0)
+#
+#     # Reset bias feature to 1 and make sure it's first column in DataFrame.
+#     norm_df = norm_df.assign(bias=1).set_index('bias').reset_index()
+#
+#     # Replace non-normalized columns with normalized columns before saving to .csv.
+#     other_df.update(norm_df)
+#
+#     # Grab original filename to save normalized data.
+#     file_name = str(other_path.stem) + '_norm.csv'
+#     other_df.to_csv(data_path.joinpath(Path(file_name)), index=False)
