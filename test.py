@@ -20,14 +20,15 @@ model = Perceptron(train='pa2_train_clean.csv',
                    validation='pa2_valid_clean.csv',
                    test='pa2_test_no_label_clean.csv',
                    label='label',
-                   mod_type='average',
-                   max_iter=15)
+                   mod_type='kernel',
+                   max_iter=15,
+                   p=2)
 
 # learned_model = model.train(max_iter=15)
 learned_model = model.train_model()
 
 # Save output for learned model to .json file.
-file_name = Path('model_output', 'test_avg.json')
+file_name = Path('model_output', 'test_kern.json')
 file_path = Path(__file__).parent.resolve().joinpath(file_name)
 
 # Create output directory if doesn't exist.
