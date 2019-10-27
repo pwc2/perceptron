@@ -11,7 +11,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from models.algorithms import predict, online_perceptron, average_perceptron, kernel_perceptron
+from models.algorithms import online_perceptron, average_perceptron, kernel_perceptron
+from models.algorithms import predict, predict_kernel, poly_kernel
 
 
 class Perceptron:
@@ -93,11 +94,19 @@ class Perceptron:
         """Generate predictions for unlabeled test data.
 
         Args:
-            weights (ndarray): (1 x m) ndarray of m weights from learned model.
+            weights (ndarray): either (1 x m) ndarray of m weights on m features from learned model, or for making
+            predictions with a polynomial kernel, a (1 x n) ndarray of learned alphas from n training samples.
 
         Returns:
             predictions (list of int): list of predicted labels.
         """
-        x_test = self.test_features.to_numpy(dtype=np.float64)
-        predictions = predict(x_test, weights)
+        X_train = self.train_features.to_numpy(dtype=np.float64)
+        y_train = self.train_labels.to_numpy(dtype=int)
+        X_test = self.test_features.to_numpy(dtype=np.float64)
+
+        if self.mod_type is 'kernel':
+            K = poly_kernel(X_train, X_test, self.p)
+            predictions = predict_kernel(weights, y_train, K)
+        else:
+            predictions = predict(X_test, weights)
         return predictions
