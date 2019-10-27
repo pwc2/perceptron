@@ -17,6 +17,7 @@
 """
 
 import numpy as np
+from progressbar import progressbar
 
 
 def predict(X, weights):
@@ -29,6 +30,7 @@ def predict(X, weights):
     Returns:
         predictions (list of int): list of predicted values in {-1, 1}.
     """
+    weights = np.array(weights, dtype=np.float64)
     wtx = X.dot(weights)
     predictions = [1 if x >= 0 else -1 for x in wtx]
     return predictions
@@ -45,6 +47,7 @@ def predict_kernel(alphas, y_train, K):
     Returns:
         predictions (list of int): list of predicted values in {-1, 1}.
     """
+    alphas = np.array(alphas, dtype=int)
     u = (alphas * y_train).dot(K)
     predictions = [1 if x >= 0 else -1 for x in u]
     return predictions
@@ -112,8 +115,7 @@ def online_perceptron(X_train, y_train, X_val, y_val, max_iter):
 
     # Run training algorithm.
     print('\nRunning online perceptron...')
-    for iteration in range(max_iter):
-        print('Current iteration: ' + str(iteration + 1))
+    for _ in progressbar(range(max_iter)):
         for sample in range(n_train):
             loss = y_train[sample] * (weights.T.dot(X_train[sample]))
             if loss <= 0:
@@ -169,8 +171,7 @@ def average_perceptron(X_train, y_train, X_val, y_val, max_iter):
 
     # Run training algorithm.
     print('\nRunning average perceptron...')
-    for iteration in range(max_iter):
-        print('Current iteration: ' + str(iteration + 1))
+    for _ in progressbar(range(max_iter)):
         for sample in range(n_train):
             loss = y_train[sample] * (weights.T.dot(X_train[sample]))
             if loss <= 0:
@@ -230,8 +231,7 @@ def kernel_perceptron(X_train, y_train, X_val, y_val, p, max_iter):
 
     # Run training algorithm.
     print('Running polynomial kernel perceptron...')
-    for iteration in range(max_iter):
-        print('Current iteration: ' + str(iteration + 1))
+    for _ in progressbar(range(max_iter)):
         for sample in range(n_train):
             u = np.dot(alphas * y_train, K[:, sample])
             if y_train[sample] * u <= 0:

@@ -1,11 +1,13 @@
 # perceptron
 
-`perceptron` has implementations of the perceptron with online learning, the average perceptron, and a polynomial kernel perceptron.
+`perceptron` contains implementations of the perceptron with online learning, the average perceptron, and a polynomial kernel perceptron.
 ## Requirements:
 
 - `numpy 1.17.2`
 
 - `pandas 0.25.1`
+
+- `progressbar2 3.37.1`
 
 ## Usage:
 
