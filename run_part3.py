@@ -8,6 +8,7 @@
     To run polynomial kernel perceptron.
     Outputs model results to /model_output folder.
 """
+import csv
 import json
 from pathlib import Path
 
@@ -51,6 +52,8 @@ model = Perceptron(train='pa2_train_clean.csv',
 learned_model = model.train_model()
 
 test_predictions = model.predict_test(learned_model['alphas'][-1])
-prediction_file = output_path.joinpath(Path('kplabel.json'))
-with open(prediction_file, 'w') as f:
-    json.dump(test_predictions, f, indent=4)
+prediction_file = output_path.joinpath(Path('kplabel.csv'))
+with open(prediction_file, 'w') as fp:
+    writer = csv.writer(fp)
+    for i in test_predictions:
+        writer.writerows([[i]])

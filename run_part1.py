@@ -9,6 +9,7 @@
     Output model results to /model_output folder.
 """
 
+import csv
 import json
 from pathlib import Path
 
@@ -36,6 +37,8 @@ with open(training_file, 'w') as f:
 
 # Best validation accuracy with 14 iterations, calculate and save predictions.
 test_predictions = model.predict_test(learned_model['weights'][13])
-prediction_file = output_path.joinpath(Path('oplabel.json'))
-with open(prediction_file, 'w') as f:
-    json.dump(test_predictions, f, indent=4)
+prediction_file = output_path.joinpath(Path('oplabel.csv'))
+with open(prediction_file, 'w') as fp:
+    writer = csv.writer(fp)
+    for i in test_predictions:
+        writer.writerows([[i]])

@@ -10,11 +10,10 @@
     Run python run.py to execute pre-processing (part 0), online perceptron (part 1), average perceptron (part 2),
     and polynomial kernel perceptron (part 3).
 """
-
-# from run import run_part0
-
-# from run import run_part1
-
-# from run import run_part2
-
-# from run import run_part3
+# import run_part0
+#
+# import run_part1
+#
+# import run_part2
+#
+# import run_part3

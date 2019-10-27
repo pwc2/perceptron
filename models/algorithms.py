@@ -27,7 +27,7 @@ def predict(X, weights):
         weights (ndarray): (1 x m) ndarray of m weights from learned model.
 
     Returns:
-        predictions (list of float): list of predicted values in {-1, 1}.
+        predictions (list of int): list of predicted values in {-1, 1}.
     """
     wtx = X.dot(weights)
     predictions = [1 if x >= 0 else -1 for x in wtx]
@@ -43,7 +43,7 @@ def predict_kernel(alphas, y_train, K):
         K (ndarray): (k x m) ndarray of gram matrix, or similarity matrix.
 
     Returns:
-        predictions (list of float): list of predicted values in {-1, 1}.
+        predictions (list of int): list of predicted values in {-1, 1}.
     """
     u = (alphas * y_train).dot(K)
     predictions = [1 if x >= 0 else -1 for x in u]

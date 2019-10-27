@@ -4,3 +4,6 @@
 .Rproj.user
 /perceptron.Rproj
 /Plots.Rmd
+/model_output/aplabel.csv
+/model_output/kplabel.csv
+/model_output/oplabel.csv
