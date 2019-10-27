@@ -20,7 +20,7 @@ model = Perceptron(train='pa2_train_clean.csv',
                    max_iter=15, # Set maximum iterations for training
                    p=None) # If using polynomial kernel, set degree
 
-learned_model = model.train(max_iter=14)
+learned_model = model.train_model()
 ```
 
 ## Data:
