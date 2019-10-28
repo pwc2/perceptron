@@ -21,7 +21,7 @@ class Perceptron:
     """
 
     def __init__(self, train, validation, test, label, mod_type, max_iter, p=None):
-        """Constructs a perceptron object.
+        """Constructs a perceptron object, which will train according to the selected mod_type.
 
         Args:
             train (str): name of normalized csv file in /data folder with training examples.

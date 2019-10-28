@@ -1,4 +1,3 @@
-/data/
 .idea
 /model_output/test.json
 .Rproj.user
@@ -8,3 +7,16 @@
 /model_output/kplabel.csv
 /model_output/oplabel.csv
 /.Rhistory
+/model_output/ap_training.json
+/model_output/op_training.json
+/model_output/p1_kp_training.json
+/model_output/p2_kp_training.json
+/model_output/p3_kp_training.json
+/model_output/p4_kp_training.json
+/model_output/p5_kp_training.json
+/data/pa2_test_no_label_clean.pkl
+/data/pa2_train_clean.csv
+/data/pa2_train_clean.pkl
+/data/pa2_valid_clean.csv
+/data/pa2_valid_clean.pkl
+/data/pa2_test_no_label_clean.csv

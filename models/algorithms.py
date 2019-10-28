@@ -2,7 +2,7 @@
     File name: algorithms.py
     Author: Patrick Cummings
     Date created: 10/25/2019
-    Date last modified: 10/26/2019
+    Date last modified: 10/27/2019
     Python Version: 3.7
 
     Contains functions for training and evaluating perceptron model.
@@ -17,6 +17,7 @@
 """
 
 import numpy as np
+
 from progressbar import progressbar
 
 

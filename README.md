@@ -1,7 +1,8 @@
 # perceptron
 
 `perceptron` contains implementations of the perceptron with online learning, the average perceptron, and a polynomial kernel perceptron.
-## Requirements:
+
+### Requirements:
 
 - `numpy 1.17.2`
 
@@ -9,7 +10,7 @@
 
 - `progressbar2 3.37.1`
 
-## Usage:
+### Usage:
 
 ```python
 from models.perceptron import Perceptron
@@ -25,11 +26,16 @@ model = Perceptron(train='pa2_train_clean.csv',
 learned_model = model.train_model()
 ```
 
-## Data:
+### Data:
 
-In `data/` folder:
+The `data/` folder contains .csv files with training, validation, and test sets.
 
-## To run models:
+### To run models:
 
-In `run` module:
+- `run_part0.py` runs pre-processing.
+- `run_part1.py` runs online perceptron.
+- `run_part2.py` runs average perceptron.
+- `run_part3.py` runs perceptron using a polynomial kernel.
+
+`python main.py` will run all four parts in order, output will be saved in `model_output` folder.
 

@@ -8,6 +8,7 @@
     To run polynomial kernel perceptron.
     Outputs model results to /model_output folder.
 """
+
 import csv
 import json
 from pathlib import Path
@@ -30,8 +31,6 @@ for value in p:
     learned_model = model.train_model()
 
     # Save output for learned model to .json file.
-    # output_folder = Path('model_output')
-    # output_path = Path(__file__).parent.resolve().joinpath(output_folder)
     training_file = output_path.joinpath(Path('p' + str(value) + '_kp_training.json'))
 
     # Create output directory if doesn't exist.

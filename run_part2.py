@@ -8,6 +8,7 @@
     To run average perceptron.
     Outputs model results to /model_output folder.
 """
+
 import csv
 import json
 from pathlib import Path
