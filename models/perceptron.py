@@ -67,7 +67,7 @@ class Perceptron:
 
     def train_model(self):
         """Trains online perceptron, without random shuffling of training data.
-            Calls online_perceptron() from algorithms.py.
+            Calls specified perceptron algorithm to run from algorithms.py.
 
         Args:
             max_iter (int): maximum number of iterations.

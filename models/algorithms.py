@@ -90,7 +90,7 @@ def poly_kernel(X, Y, p):
 
 def online_perceptron(X_train, y_train, X_val, y_val, max_iter):
     """Trains online perceptron, without random shuffling of training data.
-        Calls calc_predictions() and calc_accuracy() from metrics.py.
+        Calls predict() and accuracy().
 
     Args:
         X_train (ndarray): ndarray of training features.
@@ -144,7 +144,7 @@ def online_perceptron(X_train, y_train, X_val, y_val, max_iter):
 
 def average_perceptron(X_train, y_train, X_val, y_val, max_iter):
     """Trains average perceptron, without random shuffling of training data.
-        Calls calc_predictions() and calc_accuracy() from metrics.py.
+        Calls predict() and accuracy().
 
     Args:
         X_train (ndarray): ndarray of training features.
@@ -202,7 +202,7 @@ def average_perceptron(X_train, y_train, X_val, y_val, max_iter):
 
 def kernel_perceptron(X_train, y_train, X_val, y_val, p, max_iter):
     """Trains a polynomial kernelized perceptron, without random shuffling of training data.
-        Calls calc_predictions() and calc_accuracy() from metrics.py.
+        Calls predict() and accuracy().
 
     Args:
         X_train (ndarray): ndarray of training features.
