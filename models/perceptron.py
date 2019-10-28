@@ -67,7 +67,7 @@ class Perceptron:
 
     def train_model(self):
         """Trains online perceptron, without random shuffling of training data.
-            Calls specified perceptron algorithm to run from algorithms.py.
+            Calls specified perceptron algorithm to run from models.algorithms.
 
         Args:
             max_iter (int): maximum number of iterations.
@@ -92,6 +92,7 @@ class Perceptron:
 
     def predict_test(self, weights):
         """Generate predictions for unlabeled test data.
+            Calls poly_kernel() from models.algorithms.
 
         Args:
             weights (ndarray): either (1 x m) ndarray of m weights on m features from learned model, or for making

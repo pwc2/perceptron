@@ -202,7 +202,7 @@ def average_perceptron(X_train, y_train, X_val, y_val, max_iter):
 
 def kernel_perceptron(X_train, y_train, X_val, y_val, p, max_iter):
     """Trains a polynomial kernelized perceptron, without random shuffling of training data.
-        Calls predict() and accuracy().
+        Calls poly_kernel(), predict() and accuracy().
 
     Args:
         X_train (ndarray): ndarray of training features.
