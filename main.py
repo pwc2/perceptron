@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-    File name: run.py
+    File name: main.py
     Author: Patrick Cummings
     Date created: 10/24/2019
     Date last modified: 10/27/2019
